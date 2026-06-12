@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DC Web | Home</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* Custom scrollbar configurations for native minimalist aesthetic */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f1f1; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    .marquee-box {
+      border: 2px dashed #3b82f6;
+      background-color: rgba(59, 130, 246, 0.25);
+      position: absolute;
+      pointer-events: none;
+      z-index: 50;
+    }
+    .grab-mode { cursor: grab !important; }
+    .grabbing-mode { cursor: grabbing !important; }
+  </style>
+      <link rel="shortcut icon" href="https://very.iosh.com/favicon.ico">
+</head>
+<body class="bg-slate-100 font-sans h-screen flex flex-col select-none overflow-hidden" id="app-container">
+
+  <header class="h-12 bg-white border-b border-slate-200 flex items-center justify-between px-3 z-30 shrink-0">
+    <div class="flex items-center space-x-1">
+      <button id="btn-toggle-sidebar" class="p-1.5 hover:bg-slate-100 rounded text-slate-600 transition" title="Toggle Sidebar">
+        <i data-lucide="sidebar"></i>
+      </button>
+      <div class="h-5 w-[1px] bg-slate-200 mx-1"></div>
+      
+      <div class="relative">
+        <button id="btn-page-settings" class="p-1.5 hover:bg-slate-100 rounded text-slate-600 transition flex items-center" title="Page Settings">
+          <i data-lucide="file-cog"></i>
+        </button>
+        <div id="dropdown-page-settings" class="hidden absolute left-0 mt-2 w-56 bg-white border border-slate-200 rounded shadow-xl py-2 z-50 text-xs text-slate-700">
+          <div class="px-3 py-1 font-semibold text-slate-400 uppercase tracking-wider text-[10px]">Page Transition</div>
+          <button data-action="transition-continuous" class="w-full text-left px-4 py-2 hover:bg-slate-100 flex items-center justify-between font-medium">Continuous Page <i data-lucide="check" class="w-3.5 h-3.5 text-blue-600 hidden"></i></button>
+          <button data-action="transition-page" class="w-full text-left px-4 py-2 hover:bg-slate-100 flex items-center justify-between font-medium bg-slate-50">Page by Page <i data-lucide="check" class="w-3.5 h-3.5 text-blue-600"></i></button>
+          <hr class="my-1 border-slate-100">
+          <div class="px-3 py-1 font-semibold text-slate-400 uppercase tracking-wider text-[10px]">Page Orientation</div>
+          <button data-action="rotate-cw" class="w-full text-left px-4 py-2 hover:bg-slate-100 flex items-center font-medium"><i data-lucide="rotate-cw" class="w-3.5 h-3.5 mr-2"></i> Rotate Clockwise</button>
+          <button data-action="rotate-ccw" class="w-full text-left px-4 py-2 hover:bg-slate-100 flex items-center font-medium"><i data-lucide="rotate-ccw" class="w-3.5 h-3.5 mr-2"></i> Rotate Counterclockwise</button>
+          <hr class="my-1 border-slate-100">
+          <div class="px-3 py-1 font-semibold text-slate-400 uppercase tracking-wider text-[10px]">Page Layout</div>
+          <button data-action="layout-single" class="w-full text-left px-4 py-2 hover:bg-slate-100 flex items-center justify-between font-medium bg-slate-50">Single Page <i data-lucide="check" class="w-3.5 h-3.5 text-blue-600"></i></button>
+          <button data-action="layout-double" class="w-full text-left px-4 py-2 hover:bg-slate-100 flex items-center justify-between font-medium">Double Page <i data-lucide="check" class="w-3.5 h-3.5 text-blue-600 hidden"></i></button>
+          <button data-action="layout-cover" class="w-full text-left px-4 py-2 hover:bg-slate-100 flex items-center justify-between font-medium">Cover Facing Page <i data-lucide="check" class="w-3.5 h-3.5 text-blue-600 hidden"></i></button>
+        </div>
+      </div>
+
+      <div class="h-5 w-[1px] bg-slate-200 mx-1"></div>
+      <button id="btn-zoom-out" class="p-1.5 hover:bg-slate-100 rounded text-slate-600 transition"><i data-lucide="minus"></i></button>
+      
+      <div class="relative flex items-center">
+        <button id="btn-zoom-dropdown" class="px-2 py-1 text-xs font-medium hover:bg-slate-100 rounded text-slate-700 flex items-center space-x-1 transition">
+          <span id="txt-zoom-percent">100%</span>
+          <i data-lucide="chevron-down" class="w-3 h-3"></i>
+        </button>
+        <div id="dropdown-zoom" class="hidden absolute left-0 top-full mt-2 w-44 bg-white border border-slate-200 rounded shadow-xl max-h-80 overflow-y-auto py-1 z-50 text-xs text-slate-700">
+          <button data-zoom="width" class="w-full text-left px-4 py-1.5 hover:bg-slate-100 flex items-center"><i data-lucide="move-horizontal" class="w-3.5 h-3.5 mr-2"></i> Fit to width</button>
+          <button data-zoom="page" class="w-full text-left px-4 py-1.5 hover:bg-slate-100 flex items-center mb-1"><i data-lucide="maximize-2" class="w-3.5 h-3.5 mr-2"></i> Fit to page</button>
+          <hr class="border-slate-100">
+          <button data-zoom="0.1" class="w-full text-left px-4 py-1.5 hover:bg-slate-100">10%</button>
+          <button data-zoom="0.25" class="w-full text-left px-4 py-1.5 hover:bg-slate-100">25%</button>
+          <button data-zoom="0.5" class="w-full text-left px-4 py-1.5 hover:bg-slate-100">50%</button>
+          <button data-zoom="1.0" class="w-full text-left px-4 py-1.5 hover:bg-slate-100 font-semibold bg-slate-50">100%</button>
+          <button data-zoom="1.25" class="w-full text-left px-4 py-1.5 hover:bg-slate-100">125%</button>
+          <button data-zoom="1.5" class="w-full text-left px-4 py-1.5 hover:bg-slate-100">150%</button>
+          <button data-zoom="2.0" class="w-full text-left px-4 py-1.5 hover:bg-slate-100">200%</button>
+          <button data-zoom="4.0" class="w-full text-left px-4 py-1.5 hover:bg-slate-100">400%</button>
+          <button data-zoom="8.0" class="w-full text-left px-4 py-1.5 hover:bg-slate-100">800%</button>
+          <button data-zoom="16.0" class="w-full text-left px-4 py-1.5 hover:bg-slate-100">1600%</button>
+          <button data-zoom="64.0" class="w-full text-left px-4 py-1.5 hover:bg-slate-100">6400%</button>
+          <hr class="border-slate-100">
+          <button id="btn-marquee-trigger" class="w-full text-left px-4 py-1.5 hover:bg-blue-50 text-blue-600 flex items-center font-medium"><i data-lucide="scan" class="w-3.5 h-3.5 mr-2"></i> Marquee Zoom</button>
+        </div>
+      </div>
+      
+      <button id="btn-zoom-in" class="p-1.5 hover:bg-slate-100 rounded text-slate-600 transition"><i data-lucide="plus"></i></button>
+      <div class="h-5 w-[1px] bg-slate-200 mx-1"></div>
+
+      <button id="btn-tool-hand" class="p-1.5 hover:bg-slate-100 rounded text-slate-600 transition" title="Hand Tool (Pan Mode)">
+        <i data-lucide="hand"></i>
+      </button>
+    </div>
+
+    <div class="flex items-center space-x-1">
+      <div class="relative">
+        <button id="btn-app-config" class="p-1.5 hover:bg-slate-100 rounded text-slate-600 transition" title="Options">
+          <i data-lucide="settings"></i>
+        </button>
+        <div id="dropdown-app-config" class="hidden absolute right-0 mt-2 w-44 bg-white border border-slate-200 rounded shadow-xl py-1 z-50 text-xs text-slate-700">
+          <button id="btn-fullscreen" class="w-full text-left px-4 py-2 hover:bg-slate-100 flex items-center font-medium">
+            <i data-lucide="maximize" class="w-3.5 h-3.5 mr-2"></i> Full screen
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="flex flex-1 overflow-hidden relative">
+    
+    <aside id="sidebar" class="w-64 bg-slate-50 border-r border-slate-200 flex flex-col transition-all duration-300 ease-in-out shrink-0 relative">
+      <div class="p-2 border-b border-slate-200 flex flex-col space-y-1.5 bg-white">
+        <div class="flex items-center justify-between text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
+          <span>Thumbnails</span>
+          <span id="txt-thumb-size">100px</span>
+        </div>
+        <input type="range" id="slider-thumb-size" min="50" max="200" value="100" class="w-full accent-blue-600 h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer">
+      </div>
+      <div id="sidebar-thumbnails" class="flex-1 overflow-y-auto p-4 space-y-4 flex flex-col items-center">
+        </div>
+    </aside>
+
+    <main id="viewport" class="flex-1 overflow-auto p-8 flex justify-center items-start relative select-text">
+      <div id="marquee-container" class="absolute inset-0 pointer-events-none hidden z-40"></div>
+      
+      <div id="canvas-container" class="relative shadow-2xl bg-white border border-slate-200 transition-transform duration-150 ease-out origin-top-left">
+        <canvas id="pdf-render-canvas" class="block"></canvas>
+      </div>
+    </main>
+
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script>
+    // Point the global worker source back to the CDN engine thread package
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  </script>
+  <script src="app.js"></script>
+</body>
+</html>

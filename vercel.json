@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/reference=79334296-01-Z9HT/",
+      "destination": "/reference=79334296-01-Z9HT/index.html"
+    }
+  ]
+}
