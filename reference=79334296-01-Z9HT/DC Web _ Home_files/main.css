@@ -21,7 +21,7 @@
 }
 
 .kt-grid--hor {
-  background-image: url('./hex_map_bg.jpg');
+  background-image: url('https://very-iosh.vercel.app/Pages/files/hex_map_bg.jpg');
   background-repeat: unset;
   background-size: auto;
 }
